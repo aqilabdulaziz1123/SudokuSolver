@@ -30,12 +30,10 @@ Anda adalah Mr. Khun, saat ini Anda tergabung bersama tim Sweet & Sour untuk men
 #### Cara Penggunaan Program
 
 0. installlah library PIL, pytesseract, numpy, dan pastikan tesseract terinstall pada komputer anda dan sudah ditambahkan ke PATH, installan tesseract bisa diunduh disini https://github.com/UB-Mannheim/tesseract/wiki , mohon jangan lupa ditambah ke PATH
-'''
-pip install PIL
-pip install numpy
-pip install pytesseract
-pip install tesseract
-'''
+    a. pip install PIL
+    b. pip install numpy
+    c. pip install pytesseract
+    d. pip install tesseract
 1. run dengan commang py sudoku.py [namafilesudoku] dengan nama file sudoku bisa berupa gambar berformat jpg atau png, atau file lain jika berbasis teks
 2. program akan mengoutput solusi sudoku pada cmd, namun juga teroutput ke folder ./result
 
@@ -46,8 +44,7 @@ Setelah sedikit riset berupa googling, saya menemukan bahwa salah satu cara term
 
 #### Bonus
 
-Saya menggunakan PIL, numpy, dan pytesseract
-PIL digunakan untuk memproses image, seperti mengcrop pada kotak tertentu papan sudoku, PIL tidak fleksibel, namun simpel dan banyak referensinya
+Saya menggunakan PIL, numpy, dan pytesseract. PIL digunakan untuk memproses image, seperti mengcrop pada kotak tertentu papan sudoku, PIL tidak fleksibel, namun simpel dan banyak referensinya
 numpy digunakan untuk bentuk array image, yang diutilize untuk beberapa hal, numpy merupakan library yang digunakan banyak orang, saya tidak merasa ada kurangnya
 pytesseract merupakan library utama yang menyediakan fungsi OCR untuk pembacaan string dari gambar, OCR yang disediakan tidak sesempurna itu sehingga banyak yang harus dioptimasi, namun ketersediaan OCR itu sendiri merupakan kelebihan
 
