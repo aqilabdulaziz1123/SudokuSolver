@@ -1,5 +1,7 @@
-from PIL import Image, ImageFilter
+from PIL import Image, ImageFilter, ImageOps
 import pytesseract
+import numpy as np
+from sys import argv
 # from wand.image import Image
 
 
@@ -7,51 +9,47 @@ pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files/Tesseract-OCR/tesserac
 
 
 class sudoku:
-    def __init__(self, text=None,file=None,picture=None):
-        self.board = [[(i+j)%9+1 for i in range(9)] for j in range(9)]
-        if file:
-            with open(file,'r') as f:
+    def __init__(self, text=None,filename=None,picture=None):
+        self.board = [[0 for i in range(9)] for j in range(9)]
+        if filename:
+            with open(filename,'r') as f:
                 text = f.read()
         if text:
             for i,line in enumerate(text.split('\n')):
                 self.board[i] = [(int(i) if i != '#' else 0) for i in line.split(' ')]
         if picture:
             im = Image.open(picture)
-            # im.crop((36,34,140,68)).show()
-            # print(pytesseract.image_to_string(im.crop((36,34,72,68)),config='--psm 6'))
-            # print(pytesseract.image_to_string(im,config='--psm 6'))
-            # pytesseract.image_to_string
-            # im.crop((3.5+31.2,3.5+2*31.2,34.7))
             for j in range(9):
                 for i in range(9):
-                    cut = im.crop((3.5+31.2*i,3.5+j*31.2,33.4+31.2*i,3+(j+1)*31.2) )
-                    # cut.sharpen(radius=8,sigma=4)
-                    cut = cut.convert('RGB')
-                    # cut = cut.filter(ImageFilter.SMOOTH)
-                    # cut = cut.filter(ImageFilter.DETAIL)
-                    cut = cut.filter(ImageFilter.SMOOTH_MORE)
-                    # cut = cut.filter(ImageFilter.SMOOTH)
-                    cut = cut.filter(ImageFilter.SHARPEN)
-                    # cut = cut.convert('palette')
-                    # cut = cut.filter(ImageFilter.SMOOTH_MORE)
-                    # if picture== './test/image3.png':
-                    
-                    # cut = cut.filter(ImageFilter.SMOOTH)
-
-                    # cut = cut.filter(ImageFilter.BLUR)
-                    x = pytesseract.image_to_string(cut,config='--psm 6')
-                    if x in ['1','2','3','4','5','6','7','8','9']:
+                    cut = im.crop((3.5+31.2*i,3.5+j*31.2,33.4+31.2*i,3+(j+1)*31.2))
+                    np_img = np.array(cut)
+                    if (np_img.mean() > 20):
+                        cut = cut.convert('RGB')
+                        cut = cut.filter(ImageFilter.SMOOTH_MORE)
+                        x = pytesseract.image_to_string(cut,config='--psm 6')
+                        if len(x) > 1:
+                            for k in x:
+                                if k in ['1','2','3','4','5','6','7','8','9']:
+                                    x = k
+                                    break
+                        x = x.replace('S','5')
                         print(x,end=" ")
                         self.board[j][i] = int(x)
                     else:
+                        print(' ',end=' ')
                         self.board[j][i] = 0
-                        print(" ",end=" ")
                 print()
+        if picture:
+            name = picture.split('\n')[-1]
+        if filename:
+            name = filename.split('\n')[-1]
+        self.writeFile(name)
+        
 
 
         
     def printBoard(self):
-        print("SUDOKU")
+        # print("SUDOKU")
         for j,lines in enumerate(self.board):
             for i,num in enumerate(lines):
                 print(num,end=" ")
@@ -60,6 +58,25 @@ class sudoku:
             print()
             if j % 3 == 2 and j != 8:
                 print('--------------------')
+    
+    def writeFile(self,filename):
+        name = filename.split('/')
+        f = open("./result/"+name[-1]+".jawaban",'w')
+        print("SUDOKU",file=f)
+        for j,lines in enumerate(self.board):
+            for i,num in enumerate(lines):
+                print(num,end=" ",file=f)
+                if i % 3 == 2 and i != 8:
+                    print('|',end="",file=f) 
+            print("",file=f)
+            if j % 3 == 2 and j != 8:
+                print('--------------------',file=f)
+        print("Lokasi para 5 : ",end="",file=f)
+        for i in range(9):
+            for j in range(9):
+                if self.board[i][j] == 5:
+                    print(f"({i},{j})",end=" ",file=f)
+        f.close()
 
     def isi(self,row,col,x):
         self.board[row][col] = x
@@ -106,12 +123,51 @@ class sudoku:
                 self.board[row][col] = 0
 
         return False
+    
+    def print5(self):
+        print("Lokasi para 5 : ",end="")
+        for i in range(9):
+            for j in range(9):
+                if self.board[i][j] == 5:
+                    print(f"({i},{j})",end=" ")
 
 
 if __name__ == '__main__':
-    a = sudoku(picture='./test/image1.png')
-    # a.printBoard()
-    if a.solve():
-        a.printBoard()
+    if len(argv) < 2:
+        print("USAGE : py sudoku.py [NAMAFILESUDOKU]")
     else:
-        print("unsolvable")
+        if 'png' in argv[1] or 'jpg' in argv[1]:
+            a = sudoku(picture=argv[1])
+        else:
+            a = sudoku(filename=argv[1])
+        print("Awal : ")
+        a.printBoard()
+        if a.solve():
+            print("Jawaban : ")
+            a.printBoard()
+            a.print5()
+            a.writeFile(argv[1])
+        else:
+            print('Unsolvably unbelievable')
+
+    # a = sudoku(picture='./test/image1.png')
+    # if a.solve():
+    #     a.printBoard()
+    # else:
+        # print("unsolvable")
+    # a = sudoku(picture='./test/image2.png')
+    # if a.solve():
+    #     a.printBoard()
+    # else:
+    #     print("unsolvable")
+    # a = sudoku(picture='./test/image3.png')
+    # if a.solve():
+    #     a.printBoard()
+    # else:
+    #     print("unsolvable")
+    # a = sudoku(picture='./test/image4.png')
+    # # a.printBoard()
+    # if a.solve():
+    #     a.printBoard()
+    # else:
+    #     print("unsolvable")
