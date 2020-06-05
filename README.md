@@ -30,10 +30,14 @@ Anda adalah Mr. Khun, saat ini Anda tergabung bersama tim Sweet & Sour untuk men
 #### Cara Penggunaan Program
 
 0. installlah library PIL, pytesseract, numpy, dan pastikan tesseract terinstall pada komputer anda dan sudah ditambahkan ke PATH, installan tesseract bisa diunduh disini https://github.com/UB-Mannheim/tesseract/wiki , mohon jangan lupa ditambah ke PATH
-    a. pip install PIL
-    b. pip install numpy
-    c. pip install pytesseract
-    d. pip install tesseract
+
+'''
+pip install PIL
+pip install numpy
+pip install pytesseract
+pip install tesseract
+'''
+
 1. run dengan commang py sudoku.py [namafilesudoku] dengan nama file sudoku bisa berupa gambar berformat jpg atau png, atau file lain jika berbasis teks
 2. program akan mengoutput solusi sudoku pada cmd, namun juga teroutput ke folder ./result
 
